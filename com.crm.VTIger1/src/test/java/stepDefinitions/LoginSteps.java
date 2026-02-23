@@ -2,47 +2,40 @@ package stepDefinitions;
 
 import java.io.IOException;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 
-import genericUtility.ExcelUtility;
-import genericUtility.SeleniumUtility;
 import genericUtility.propertiesUtility;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
+import genericUtility.SeleniumUtility;
+import io.cucumber.java.en.*;
 import objectRepo.LoginPage;
-import objectRepo.LoginPage;
+import hooks.Hooks;
 
 public class LoginSteps {
 
-   
     LoginPage lp;
-    public WebDriver driver;
-	public propertiesUtility putil=new propertiesUtility();
-	public SeleniumUtility sutil=new SeleniumUtility();
-	public ExcelUtility eutil=new ExcelUtility();
+    propertiesUtility putil = new propertiesUtility();
+    SeleniumUtility sutil = new SeleniumUtility();
 
     @Given("user is on login page")
     public void openLoginPage() throws IOException {
-    	 driver=new ChromeDriver();
-		 String URL=putil.getDataFromProperties("url");
-		 sutil.maximizewindow(driver);
-		 sutil.implicitwait(driver, 15);
-		 sutil.accessApplication(driver,URL);
-		 System.out.println("Brower launched Successfully");
+
+        String URL = putil.getDataFromProperties("url");
+        sutil.implicitwait(Hooks.driver, 15);
+        sutil.accessApplication(Hooks.driver, URL);
+
+        System.out.println("Browser launched successfully");
     }
 
     @When("user enters credentials from Excel")
     public void enterCredentials() throws IOException {
-    	String UN=putil.getDataFromProperties("username");
-		String PS=putil.getDataFromProperties("password");
-		 lp=new LoginPage(driver);
-		lp.login(UN, PS);
-		System.out.println("Login done Successfully");
+
+        String UN = putil.getDataFromProperties("username");
+        String PS = putil.getDataFromProperties("password");
+
+        lp = new LoginPage(Hooks.driver);
+        lp.login(UN, PS);
     }
+
     @And("clicks on login button")
     public void clickLogin() {
         lp.clickLogin();
@@ -50,7 +43,6 @@ public class LoginSteps {
 
     @Then("user should navigate to home page")
     public void verifyHomePage() {
-        Assert.assertTrue(driver.getTitle().contains("Home"));
-        driver.quit();
+        Assert.assertTrue(Hooks.driver.getTitle().contains("Home"));
     }
 }
